@@ -1,0 +1,48 @@
+(function () {
+    try{
+        var imaff_rid_name = null; try { imaff_rid_name = imaf_imaff_rid_name; imaf_imaff_rid_name = null; } catch (ex) { }
+        var ridName = 'imaff_rid';
+        if (imaff_rid_name != null) {
+            ridName = imaff_rid_name;
+        }
+
+        var ridData = GetRid(ridName);
+
+        if (!ridData) {
+            ridData = GetRid('rid');
+        }
+        if (!ridData) {
+            return;
+        }
+
+        getUrlParamSetCookie(ridData);
+
+        function GetRid(paramName) {
+            var ridData = "";
+            var regUrlParam = new RegExp(paramName + "=(.*?)(&|$)");
+            var match = location.search.match(regUrlParam);
+            if (match) {
+                ridData = match[1];
+            }
+            return ridData;
+        }
+
+        function getUrlParamSetCookie(ridData) {
+            if (!ridData) {
+                return;
+            }
+
+            document.cookie = "imaff_rid=" + ridData + ";max-age=15552000" + ";domain=." + detectDomain(document.domain) + ";path=/;";
+            function detectDomain(domain) {
+                if (/^[0-9a-z\-_]{1,20}\.[0-9a-z\-_]{3,50}\.[a-z]{2,10}(\.[a-z]{2,10})?$/.test(domain)) {
+                    return domain.substr(domain.indexOf('.') + 1);
+                }
+                return domain;
+            }
+            
+            localStorage.setItem('imaff_rid', ridData);
+        }
+    }catch(ex){
+
+    }
+})();
